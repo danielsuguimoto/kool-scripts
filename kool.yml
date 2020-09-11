@@ -1,10 +1,9 @@
 scripts:
   gh: kool docker --volume=$HOME/.ssh:/root/.ssh:delegated --volume=$PWD:/git:delegated --env="GITHUB_TOKEN=$KOOL_GH_TOKEN" danielsuguimoto/gh
-  create-pr: kool run gh pr create -wB
   status-pr: kool run gh pr status
-  view-pr: kool run gh pr view -w
+  view-pr: kool run gh pr view
 
-  git: kool docker --volume=$HOME/.ssh:/root/.ssh:delegated --volume=$PWD:/git:delegated alpine/git
+  git: kool docker --disable-tty --volume=$HOME/.ssh:/root/.ssh:delegated --volume=$PWD:/git:delegated alpine/git
   update-master:
     - kool run git checkout master
     - kool run git pull upstream master
@@ -15,7 +14,7 @@ scripts:
   kool-dev:
     - kool run parse-presets
     - kool docker --env='GOOS=$GOOS' --volume=$GOPATH:/go:delegated golang:1.15.0 go build -o kool
-    - kool run install
+    - mv kool /usr/local/bin/kools
 
   kool-docs:
     - rm -f docs/4-Commands/*.md
