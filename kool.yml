@@ -22,3 +22,5 @@ scripts:
     - kool docker --volume=$GOPATH:/go:delegated golang:1.15.0 go run docs.go
 
   go-lint: kool docker --volume=$GOPATH:/go:delegated golangci/golangci-lint:v1.31.0 golangci-lint run -v
+
+  cobra: kool docker danielsuguimoto/go-cobra
