@@ -1,9 +1,14 @@
 scripts:
-  gh: kool docker --volume=$HOME/.ssh:/root/.ssh:delegated --volume=$PWD:/git:delegated --env="GITHUB_TOKEN=$KOOL_GH_TOKEN" danielsuguimoto/gh
+  gh: kool docker --volume=$HOME/.ssh:/root/.ssh:delegated --volume=$PWD:/git:delegated --env="GITHUB_TOKEN=$KOOL_GH_TOKEN" --env="BROWSER=echo" danielsuguimoto/gh
+  gh-no-tty: kool docker --disable-tty --volume=$HOME/.ssh:/root/.ssh:delegated --volume=$PWD:/git:delegated --env="GITHUB_TOKEN=$KOOL_GH_TOKEN" --env="BROWSER=echo" danielsuguimoto/gh
   status-pr: kool run gh pr status
-  view-pr: kool run gh pr view
+  view-pr: kool run gh pr view -w
+  create-pr: kool run gh pr create -wB
 
-  git: kool docker --disable-tty --volume=$HOME/.ssh:/root/.ssh:delegated --volume=$PWD:/git:delegated alpine/git
+  git-no-tty: kool docker --disable-tty --volume=$HOME/.ssh:/root/.ssh:delegated --volume=$PWD:/git:delegated alpine/git
+  git: kool docker --volume=$HOME/.ssh:/root/.ssh:delegated --volume=$PWD:/git:delegated alpine/git
+  new-branch: kool run git checkout -b
+  push: kool run git push -u origin
   update-master:
     - kool run git checkout master
     - kool run git pull upstream master
