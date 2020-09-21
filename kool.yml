@@ -29,6 +29,11 @@ scripts:
     - rm -f docs/4-Commands/*.md
     - kool docker --volume=$GOPATH:/go:delegated golang:1.15.0 go run docs.go
 
+  go-qa:
+    - kool docker --volume=$GOPATH:/go:delegated golang:1.15.0 go fmt ./...
+    - kool docker --volume=$GOPATH:/go golangci/golangci-lint:v1.31.0 golangci-lint run -v
+    - kool docker --volume=$GOPATH:/go golang:1.15.0 go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+
   # Golang commands
   go-lint: kool docker --volume=$GOPATH:/go:delegated golangci/golangci-lint:v1.31.0 golangci-lint run -v
 
