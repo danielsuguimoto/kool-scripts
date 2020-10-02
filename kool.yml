@@ -1,11 +1,4 @@
 scripts:
-  # Github cli commands
-  gh: kool docker --volume=$HOME/.ssh:/root/.ssh:delegated --volume=$PWD:/git:delegated --env="GITHUB_TOKEN=$KOOL_GH_TOKEN" --env="BROWSER=echo" danielsuguimoto/gh
-  gh-no-tty: kool docker --disable-tty --volume=$HOME/.ssh:/root/.ssh:delegated --volume=$PWD:/git:delegated --env="GITHUB_TOKEN=$KOOL_GH_TOKEN" --env="BROWSER=echo" danielsuguimoto/gh
-  status-pr: kool run gh pr status
-  view-pr: kool run gh pr view -w
-  create-pr: kool run gh pr create -wB
-
   # Git commands
   git-no-tty: kool docker --disable-tty --volume=$HOME/.ssh:/root/.ssh:delegated --volume=$PWD:/git:delegated alpine/git
   git: kool docker --volume=$HOME/.ssh:/root/.ssh:delegated --volume=$PWD:/git:delegated alpine/git
@@ -13,15 +6,19 @@ scripts:
   push: kool run git push -u origin
   update-master:
     - kool run git checkout master
+    - kool run git reset --hard origin/master
     - kool run git pull upstream master
     - kool run git push origin master
 
   # Docker commands
   prune: docker system prune -af --volumes
+  update:
+    - kool stop
+    - docker-compose pull
+    - kool start
 
   # Kool commands
   kool-dev:
-    - kool run parse-presets
     - kool docker --env='GOOS=$GOOS' --volume=$GOPATH:/go:delegated golang:1.15.0 go build -o kool
     - mv kool /usr/local/bin/kools
 
@@ -29,13 +26,14 @@ scripts:
     - rm -f docs/4-Commands/*.md
     - kool docker --volume=$GOPATH:/go:delegated golang:1.15.0 go run docs.go
 
-  go-qa:
-    - kool docker --volume=$GOPATH:/go:delegated golang:1.15.0 go fmt ./...
-    - kool docker --volume=$GOPATH:/go golangci/golangci-lint:v1.31.0 golangci-lint run -v
-    - kool docker --volume=$GOPATH:/go golang:1.15.0 go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
-
   # Golang commands
   go-lint: kool docker --volume=$GOPATH:/go:delegated golangci/golangci-lint:v1.31.0 golangci-lint run -v
+  go-fmt: kool docker --volume=$GOPATH:/go:delegated golang:1.15.0 go fmt ./...
+  go-test: kool docker --volume=$GOPATH:/go:delegated golang:1.15.0 go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+  go-qa:
+    - kool run go-fmt
+    - kool run go-lint
+    - kool run go-test
 
   # Golang Cobra commands
   cobra: kool docker danielsuguimoto/go-cobra
