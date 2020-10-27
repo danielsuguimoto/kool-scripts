@@ -9,11 +9,11 @@ scripts:
   gc: kool run git commit -am
   gs: kool run git status
   ga: kool run git add .
-  gum:
-    - kool run git checkout master
-    - kool run git reset --hard origin/master
-    - kool run git pull upstream master
-    - kool run git push origin master
+  gub:
+    - kool run git checkout $BRANCH
+    - kool run git reset --hard origin/$BRANCH
+    - kool run git pull upstream $BRANCH
+    - kool run git push origin $BRANCH
 
   # Docker commands
   prune: docker system prune -af --volumes
