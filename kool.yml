@@ -42,7 +42,8 @@ scripts:
     - kool run gotest
 
   krelease:
-    - kool run update-master
+    - export BRANCH=master
+    - kool run gub
     - kool run make-docs
     - kool run parse-presets
     - kool run fmt
