@@ -1,6 +1,6 @@
 scripts:
   # Git commands
-  git: kool docker -v $PWD:/git:delegated -v $HOME/.ssh:/root/.ssh:delegated alpine/git
+  git: kool docker -v $PWD:/git:cached -v $HOME/.ssh:/root/.ssh:cached alpine/git
   gitconfig:
     - kool run git config user.email "danielsuguimoto@gmail.com"
     - kool run git config user.name "Daniel Jun Suguimoto"
@@ -25,17 +25,17 @@ scripts:
   # Kool commands
   kdev:
     - rm -f kool
-    - kool docker --env='GOOS=$GOOS' --volume=go_path:/go:delegated golang:1.15.0 go build -o kool
+    - kool docker --env='GOOS=$GOOS' --volume=go_path:/go golang:1.15.0 go build -o kool
     - mv kool /usr/local/bin/kools
 
   kdocs:
     - rm -f docs/4-Commands/*.md
-    - kool docker --volume=go_path:/go:delegated golang:1.15.0 go run docs.go
+    - kool docker --volume=go_path:/go golang:1.15.0 go run docs.go
 
   # Golang commands
-  golint: kool docker --volume=go_path:/go:delegated golangci/golangci-lint:v1.31.0 golangci-lint run -v
-  gofmt: kool docker --volume=go_path:/go:delegated golang:1.15.0 go fmt ./...
-  gotest: kool docker --volume=go_path:/go:delegated golang:1.15.0 go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+  golint: kool docker --volume=go_path:/go golangci/golangci-lint:v1.31.0 golangci-lint run -v
+  gofmt: kool docker --volume=go_path:/go golang:1.15.0 go fmt ./...
+  gotest: kool docker --volume=go_path:/go golang:1.15.0 go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
   goqa:
     - kool run gofmt
     - kool run golint
