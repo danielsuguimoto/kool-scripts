@@ -2,18 +2,18 @@ scripts:
   # Git commands
   git: kool docker -v $PWD:/git:cached -v $HOME/.ssh:/root/.ssh:cached alpine/git
   gitconfig:
-    - kool run git config user.email "danielsuguimoto@gmail.com"
-    - kool run git config user.name "Daniel Jun Suguimoto"
+    - kool run git config user.email $GIT_EMAIL
+    - kool run git config user.name $GIT_USERNAME
   gnb: kool run git checkout -b
   gp: kool run git push -u origin
   gc: kool run git commit -am
   gs: kool run git status
   ga: kool run git add .
   gub:
-    - kool run git checkout $BRANCH
-    - kool run git reset --hard origin/$BRANCH
-    - kool run git pull upstream $BRANCH
-    - kool run git push origin $BRANCH
+    - kool run git checkout $ORIGIN_BRANCH
+    - kool run git reset --hard origin/$ORIGIN_BRANCH
+    - kool run git pull upstream $UPSTREAM_BRANCH
+    - kool run git push origin $ORIGIN_BRANCH
 
   # Docker commands
   prune: docker system prune -af --volumes
@@ -28,9 +28,6 @@ scripts:
     - kool docker --env='GOOS=$GOOS' --volume=go_path:/go golang:1.15.0 go build -o kool
     - mv kool /usr/local/bin/kools
 
-  kdocs:
-    - rm -f docs/4-Commands/*.md
-    - kool docker --volume=go_path:/go golang:1.15.0 go run docs.go
 
   # Golang commands
   golint: kool docker --volume=go_path:/go golangci/golangci-lint:v1.31.0 golangci-lint run -v
@@ -42,7 +39,8 @@ scripts:
     - kool run gotest
 
   krelease:
-    - export BRANCH=master
+    - export ORIGIN_BRANCH=master
+    - export UPSTREAM_BRANCH=master
     - kool run gub
     - kool run make-docs
     - kool run parse-presets
@@ -52,9 +50,3 @@ scripts:
   # Golang Cobra commands
   cobra: kool docker danielsuguimoto/go-cobra
   cadd: kool run cobra add
-
-  #fwd
-  fstart: fwd start
-  fdown: fwd down
-  fyarn: fwd yarn
-  fart: fwd artisan
